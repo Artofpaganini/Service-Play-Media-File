@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">ServicePlayMusicFile</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="stop">Stop</string>
+    <string name="name"> Undead</string>
+    <string name="singer">Hollywood Undead</string>
+    <string name="style">Post-Hardcore</string>
+</resources>

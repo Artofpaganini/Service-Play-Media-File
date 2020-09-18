@@ -39,13 +39,13 @@ public class MainActivity extends AppCompatActivity {
             MyService.MyServiceBinder binder = (MyService.MyServiceBinder) service;
             myService = binder.getService();
             isServiceBound = true;
-            Log.d(TAG, "onServiceConnected: service connected");
+            Log.d(TAG, "onServiceConnected: BINDER connected");
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
             isServiceBound = false;
-            Log.d(TAG, "onServiceDisconnected: service connected");
+            Log.d(TAG, "onServiceDisconnected: BINDER disconnected");
         }
     };
 
@@ -67,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
         play.setOnClickListener(view -> {
             bindService(serviceIntent, serviceConnection, BIND_AUTO_CREATE);
             play();
+
+
         });
 
         pause.setOnClickListener(view -> {
@@ -82,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
             startService(serviceIntent);
 
         }
+
         Log.d(TAG, "play: LOAD and START and SAVE");
     }
 

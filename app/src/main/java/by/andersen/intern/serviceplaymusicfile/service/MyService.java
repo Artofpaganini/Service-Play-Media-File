@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 
 import by.andersen.intern.serviceplaymusicfile.R;
 
+
 public class MyService extends Service {
 
     private static final String TAG = "MyService";
@@ -20,6 +21,7 @@ public class MyService extends Service {
     private MediaPlayer mediaPlayer;
     private IBinder binder = new MyServiceBinder();
     private int pausePosition;
+
     private boolean isMusicStopped = true;
 
 
@@ -60,33 +62,54 @@ public class MyService extends Service {
         super.onCreate();
 
         if (mediaPlayer == null) {
-            mediaPlayer = MediaPlayer.create(this, R.raw.music_file);
+            mediaPlayer = MediaPlayer.create(this, R.raw.media_file);
         }
         playMusic();
+
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+
+                mediaPlayer.seekTo(0);
+                onDestroy();
+
+                Log.d(TAG, "onCompletion: FINISH media file ");
+            }
+
+        });
         Log.d(TAG, "onCreate: service on created");
 
     }
 
+    public MediaPlayer getMediaPlayer() {
+        return mediaPlayer;
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (mediaPlayer == null) {
+            onCreate();
+        }
         playMusic();
         Log.d(TAG, "onStartCommand: service started");
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
         stopMusic();
+
+
         Log.d(TAG, "onDestroy: service destroyed");
     }
 
     public void playMusic() {
         if (mediaPlayer != null && getPausePosition() != 0) {
             mediaPlayer.seekTo(getPausePosition());
-        }
-        if (isMusicStopped) {
+        } else if (isMusicStopped) {
             mediaPlayer.start();
             isMusicStopped = false;
+
         }
         Log.d(TAG, "playMusic: PLAY");
     }
@@ -101,19 +124,15 @@ public class MyService extends Service {
 
     public void stopMusic() {
 
-        if (mediaPlayer != null) {
-            mediaPlayer.pause();
-            pausePosition = mediaPlayer.getCurrentPosition();
-            mediaPlayer.stop();
-            isMusicStopped = true;
-        }
+        mediaPlayer.stop();
+        isMusicStopped = true;
+        mediaPlayer = null;
+
         Log.d(TAG, "stopMusic: STOP");
     }
+
 
     public int getPausePosition() {
         return pausePosition;
     }
 }
-
-
-
